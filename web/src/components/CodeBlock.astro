@@ -1,0 +1,47 @@
+---
+import { Code } from 'astro/components'
+import type { ComponentProps } from 'astro'
+
+interface Props {
+  node: any
+}
+
+const { node } = Astro.props
+const { code, language, filename } = node
+---
+
+<div class="my-6 rounded-lg overflow-hidden">
+  {filename && (
+    <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm font-mono">{filename}</div>
+  )}
+  <div class="relative">
+    {code.split('\n').length > 8 && (
+      <button
+        class="absolute top-2 right-2 text-xs px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded z-10"
+        id="copy-btn"
+      >
+        Copy
+      </button>
+    )}
+    <Code
+      code={code}
+      lang={language || 'plaintext'}
+      theme={{
+        light: 'github-light',
+        dark: 'github-dark',
+      }}
+      wrapLines
+      showLineNumbers={code.split('\n').length > 5}
+    />
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('copy-btn')
+  btn?.addEventListener('click', async () => {
+    const code = btn.closest('pre')?.textContent
+    await navigator.clipboard.writeText(code || '')
+    btn.textContent = 'Copied!'
+    setTimeout(() => btn.textContent = 'Copy', 2000)
+  })
+</script>

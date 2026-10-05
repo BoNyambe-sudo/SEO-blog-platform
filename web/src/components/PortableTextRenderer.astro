@@ -1,0 +1,47 @@
+---
+import { PortableText } from 'astro-portabletext'
+import CodeBlock from './CodeBlock.astro'
+import SanityImage from './SanityImage.astro'
+import YouTubeEmbed from './YouTubeEmbed.astro'
+import Callout from './Callout.astro'
+import type { PortableTextType } from 'astro-portabletext'
+
+interface Props {
+  value: PortableTextType
+}
+
+const { value } = Astro.props
+
+const components = {
+  type: {
+    code: CodeBlock,
+    image: SanityImage,
+    youtube: YouTubeEmbed,
+    callout: Callout,
+  },
+  block: {
+    h1: 'h1',
+    h2: 'h2',
+    h3: 'h3',
+    h4: 'h4',
+    normal: 'p',
+    blockquote: 'blockquote',
+  },
+  list: {
+    bullet: 'ul',
+    number: 'ol',
+  },
+  mark: {
+    link: ({ children, value }: any) => (
+      <a href={value?.href} class="text-blue-600 hover:underline" target="_blank" rel="noopener nofollow">
+        {children}
+      </a>
+    ),
+    strong: 'strong',
+    em: 'em',
+    code: 'code',
+  },
+}
+---
+
+<PortableText value={value} components={components} />

@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PostCard from '../../components/PostCard.astro'
+import { client } from '../../lib/sanity'
+import { POSTS_LIST_QUERY, POST_COUNT_QUERY } from '../../lib/queries'
+import { getCanonicalUrl } from '../../lib/seo'
+
+export async function getStaticPaths() {
+  const posts = await client.fetch(POSTS_LIST_QUERY, { skip: 0, limit: 1000 })
+  const count = await client.fetch(POST_COUNT_QUERY)
+  const totalPages = Math.ceil(count / 6)
+
+  return Array.from({ length: totalPages }, (_, i) => ({
+    params: { page: String(i + 1) },
+    props: { page: i + 1, totalPages },
+  }))
+}
+
+const { page, totalPages } = Astro.props
+const posts = await client.fetch(POSTS_LIST_QUERY, { skip: (page - 1) * 6, limit: 6 })
+---
+
+<Layout
+  title="Blog"
+  description="All articles about SEO, web performance, and modern web development."
+  canonical={getCanonicalUrl(`/blog/${page}`)}
+  type="website"
+>
+  <section class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <h1 class="text-3xl font-bold mb-8">All Articles</h1>
+
+      {posts.length > 0 ? (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post: any) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      ) : (
+        <p class="text-gray-600 dark:text-gray-400">No posts found.</p>
+      )}
+
+      {totalPages > 1 && (
+        <nav class="mt-12 flex justify-center gap-2" aria-label="Pagination">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <a
+              href={`/blog/${i + 1}`}
+              class={`px-4 py-2 rounded-lg ${
+                page === i + 1
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+              aria-current={page === i + 1 ? 'page' : undefined}
+            >
+              {i + 1}
+            </a>
+          ))}
+        </nav>
+      )}
+    </div>
+  </section>
+</Layout>

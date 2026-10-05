@@ -1,0 +1,14 @@
+{
+  "name": "seo-blog-platform",
+  "private": true,
+  "packageManager": "pnpm@12.9.1",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:studio": "pnpm --filter studio dev",
+    "build": "pnpm --filter web build",
+    "studio:deploy": "pnpm --filter studio deploy",
+    "seed": "pnpm --filter studio exec tsx lib/seed.ts"
+  }
+}

@@ -1,0 +1,39 @@
+---
+interface Props {
+  content: any[]
+}
+
+const { content } = Astro.props
+
+function extractHeadings(content: any[]): { text: string; slug: string; level: number }[] {
+  const stack: { text: string; slug: string; level: number }[] = []
+  for (const block of content) {
+    if (block._type === 'block' && ['h2', 'h3'].includes(block.style)) {
+      const text = block.children?.map((c: any) => c.text).join('') || ''
+      const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+      stack.push({ text, slug, level: block.style === 'h2' ? 2 : 3 })
+    }
+  }
+  return stack
+}
+
+const headings = extractHeadings(content)
+---
+
+{headings.length > 0 && (
+  <nav class="hidden lg:block" aria-label="Table of contents">
+    <h3 class="text-sm font-semibold mb-4">On this page</h3>
+    <ul class="space-y-1">
+      {headings.map((h) => (
+        <li class={`ml-${h.level * 2}`}>
+          <a
+            href={`#${h.slug}`}
+            class="text-sm hover:text-blue-600 dark:hover:text-blue-400"
+          >
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

@@ -1,0 +1,22 @@
+---
+import PortableTextRenderer from './PortableTextRenderer.astro'
+
+interface Props {
+  node: any
+}
+
+const { node } = Astro.props
+const { type = 'info', title } = node
+
+const typeClasses = {
+  info: 'bg-blue-50 dark:bg-blue-950/30 border-blue-400',
+  warning: 'bg-amber-50 dark:bg-amber-950/30 border-amber-400',
+  danger: 'bg-red-50 dark:bg-red-950/30 border-red-400',
+  success: 'bg-green-50 dark:bg-green-950/30 border-green-400',
+}
+---
+
+<aside class={`border-l-4 p-4 my-6 rounded ${typeClasses[type]}`}>
+  {title && <strong class="block mb-2">{title}</strong>}
+  <PortableTextRenderer value={node.content} />
+</aside>

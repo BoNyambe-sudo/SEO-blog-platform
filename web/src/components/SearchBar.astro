@@ -1,0 +1,67 @@
+---
+import Fuse from 'fuse.js'
+---
+
+<div class="relative">
+  <input
+    type="search"
+    placeholder="Search articles..."
+    class="w-full max-w-sm rounded-lg border px-4 py-2 bg-white dark:bg-gray-800"
+    id="search-input"
+  />
+
+  <div id="search-results" class="absolute z-10 mt-2 w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 hidden">
+    <ul id="search-list"></ul>
+  </div>
+</div>
+
+<script>
+  import Fuse from 'fuse.js'
+
+  const input = document.getElementById('search-input') as HTMLInputElement
+  const resultsContainer = document.getElementById('search-results')
+  const list = document.getElementById('search-list')
+
+  let fuse: Fuse<any> | null = null
+
+  fetch('/search-index.json')
+    .then(r => r.json())
+    .then(data => {
+      fuse = new Fuse(data, {
+        keys: ['title', 'excerpt', 'categories'],
+        threshold: 0.3,
+        includeScore: true,
+        minMatchCharLength: 2,
+      })
+    })
+
+  input?.addEventListener('input', (e) => {
+    const q = (e.target as HTMLInputElement).value
+    if (!fuse || q.length === 0) {
+      resultsContainer?.classList.add('hidden')
+      return
+    }
+
+    const results = fuse.search(q).slice(0, 5)
+    if (results.length > 0) {
+      list.innerHTML = results.map((r: any) => `
+        <li>
+          <a href="${r.item.slug}" class="block p-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <h4 class="font-medium">${r.item.title}</h4>
+            <p class="text-sm text-gray-500">${r.item.excerpt}</p>
+          </a>
+        </li>
+      `).join('')
+      resultsContainer.classList.remove('hidden')
+    } else {
+      resultsContainer.classList.add('hidden')
+    }
+  })
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault()
+      input?.focus()
+    }
+  })
+</script>

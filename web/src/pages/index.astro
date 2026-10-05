@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PostCard from '../components/PostCard.astro'
+import { client } from '../lib/sanity'
+import { FEATURED_POSTS_QUERY } from '../lib/queries'
+import { getCanonicalUrl } from '../lib/seo'
+
+const posts = await client.fetch(FEATURED_POSTS_QUERY)
+---
+
+<Layout
+  title="SEO Blog Platform"
+  description="A content-first blog platform built for SEO and speed."
+  canonical={getCanonicalUrl('/')}
+  type="website"
+>
+  <section class="py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          Insights on SEO & Web Performance
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
+          Expert guides, tutorials, and best practices for building faster, more discoverable websites.
+        </p>
+      </div>
+
+      {posts.length > 0 && (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post: any) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      )}
+
+      <div class="mt-12 text-center">
+        <a
+          href="/blog/1"
+          class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          View All Articles
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

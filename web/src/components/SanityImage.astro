@@ -1,0 +1,40 @@
+---
+import { urlFor } from '../lib/image'
+
+interface Props {
+  node: any
+}
+
+const { node } = Astro.props
+const { asset, alt, caption } = node
+
+if (!asset) return null
+
+const imageUrl = urlFor(asset)
+  .auto('format')
+  .width(800)
+  .dpr(2)
+  .fit('crop')
+  .url()
+
+const { width, height } = asset.metadata?.dimensions || { width: 800, height: 400 }
+const aspectRatio = width / height
+---
+
+<figure class="my-8">
+  <img
+    src={imageUrl}
+    alt={alt || ''}
+    width={width}
+    height={height}
+    loading="lazy"
+    decoding="async"
+    style={`aspect-ratio: ${aspectRatio}`}
+    class="w-full h-auto rounded-lg"
+  />
+  {caption && (
+    <figcaption class="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
+      {caption}
+    </figcaption>
+  )}
+</figure>

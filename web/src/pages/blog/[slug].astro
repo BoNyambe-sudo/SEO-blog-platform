@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { client } from '../../lib/sanity'
+import { POST_BY_SLUG_QUERY } from '../../lib/queries'
+import { getCanonicalUrl, truncateText } from '../../lib/seo'
+import { calculateReadTime } from '../../lib/utils'
+import PortableTextRenderer from '../../components/PortableTextRenderer.astro'
+import TableOfContents from '../../components/TableOfContents.astro'
+import SocialShare from '../../components/SocialShare.astro'
+
+export const prerender = false
+
+const { slug } = Astro.params
+const post = await client.fetch(POST_BY_SLUG_QUERY, { slug })
+
+if (!post) {
+  return Astro.redirect('/404')
+}
+---
+
+<Layout
+  title={post.seoTitle || post.title}
+  description={truncateText(post.seoDescription || post.excerpt || post.title, 160)}
+  image={post.coverImage?.asset?.url || '/og-default.png'}
+  canonical={getCanonicalUrl(`/blog/${post.slug.current}`)}
+  type="article"
+  articleData={{
+    publishedTime: post.publishedAt,
+    authors: post.author ? [post.author.name] : [],
+    tags: post.categories?.map((c: any) => c.title) || [],
+  }}
+>
+  <article class="py-12">
+    <div class="max-w-3xl mx-auto px-4">
+      <header class="mb-8">
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <time datetime={post.publishedAt}>
+            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
+          <span>·</span>
+          <span>{calculateReadTime(post.content || [])} min read</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
+        {post.excerpt && (
+          <p class="text-lg text-gray-600 dark:text-gray-400">{post.excerpt}</p>
+        )}
+        {post.author && (
+          <div class="mt-6 flex items-center gap-3">
+            {post.author.image && (
+              <img
+                src={post.author.image.asset.url}
+                alt={post.author.name}
+                width={40}
+                height={40}
+                class="rounded-full"
+              />
+            )}
+            <div>
+              <p class="font-medium">{post.author.name}</p>
+              {post.author.website && (
+                <a href={post.author.website} class="text-sm text-blue-600 hover:underline" target="_blank" rel="noopener">
+                  {post.author.website.replace(/^https?:\/\//, '')}
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+      </header>
+
+      {post.coverImage && (
+        <div class="mb-8">
+          <img
+            src={post.coverImage.asset.url}
+            alt={post.title}
+            width={post.coverImage.asset.metadata?.dimensions?.w || 1200}
+            height={post.coverImage.asset.metadata?.dimensions?.h || 630}
+            class="w-full rounded-lg"
+          />
+        </div>
+      )}
+
+      <div class="grid lg:grid-cols-[1fr_200px] gap-8">
+        <div>
+          <div class="prose dark:prose-invert max-w-none">
+            <PortableTextRenderer value={post.content} />
+          </div>
+
+          <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
+            <SocialShare url={`/blog/${post.slug.current}`} title={post.title} />
+          </div>
+        </div>
+        <aside class="hidden lg:block">
+          <TableOfContents content={post.content} />
+        </aside>
+      </div>
+
+      {post.categories && post.categories.length > 0 && (
+        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
+          <div class="flex flex-wrap gap-2">
+            {post.categories.map((cat: any) => (
+              <a
+                href={`/category/${cat.slug.current}`}
+                class="text-sm px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              >
+                {cat.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </article>
+</Layout>

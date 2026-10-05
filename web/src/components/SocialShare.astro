@@ -1,0 +1,41 @@
+---
+const { url, title } = Astro.props
+const shareData = { title, url: `${import.meta.env.SITE_URL}${url}` }
+---
+
+<div class="flex gap-2">
+  <button
+    id="share-btn"
+    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+    title="Copy link"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+  </button>
+  <a
+    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareData.url)}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+    title="Share on Twitter"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+  </a>
+  <a
+    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareData.url)}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+    title="Share on LinkedIn"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+  </a>
+</div>
+
+<script>
+  const btn = document.getElementById('share-btn')
+  btn?.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(window.location.href)
+    btn.textContent = 'Copied!'
+    setTimeout(() => { btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' }, 2000)
+  })
+</script>

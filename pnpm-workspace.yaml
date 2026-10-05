@@ -1,0 +1,5 @@
+packages:
+  - "web"
+  - "studio"
+allowBuilds:
+  esbuild: true

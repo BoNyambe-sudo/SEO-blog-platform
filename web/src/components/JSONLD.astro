@@ -1,0 +1,7 @@
+---
+interface Props {
+  type: string
+  data: Record<string, any>
+}
+---
+<script type="application/ld+json" set:html={JSON.stringify(props.data)} />

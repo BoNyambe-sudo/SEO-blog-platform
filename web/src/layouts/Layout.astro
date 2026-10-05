@@ -1,0 +1,67 @@
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import SEOHead from '../components/SEOHead.astro'
+import { ViewTransitions } from 'astro:components'
+
+interface Props {
+  title?: string
+  description?: string
+  image?: string
+  canonical?: string
+  noIndex?: boolean
+  type?: 'website' | 'article'
+  articleData?: {
+    publishedTime?: string
+    modifiedTime?: string
+    authors?: string[]
+  }
+}
+
+const {
+  title = 'SEO Blog Platform',
+  description = 'A content-first blog platform built for SEO and speed.',
+  image = '/og-default.png',
+  canonical,
+  noIndex = false,
+  type = 'website',
+  articleData,
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <SEOHead
+      title={title}
+      description={description}
+      image={image}
+      canonical={canonical}
+      noIndex={noIndex}
+      type={type}
+      articleData={articleData}
+    />
+    <ViewTransitions />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap"
+    />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || 'system'
+      const html = document.documentElement
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      html.setAttribute('data-theme', theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme)
+    </script>
+  </body>
+</html>

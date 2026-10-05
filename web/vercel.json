@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "regions": ["cdg1", "iad1", "lhr1"],
+  "build": {
+    "env": {
+      "PUBLIC_SANITY_PROJECT_ID": "your_id",
+      "PUBLIC_SANITY_DATASET": "production"
+    }
+  },
+  "staticPatterns": [
+    {
+      "src": "/_astro/(.+)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    }
+  ]
+}

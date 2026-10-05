@@ -1,0 +1,95 @@
+---
+import { SEO } from 'astro-seo'
+import JSONLD from './JSONLD.astro'
+
+interface Props {
+  title: string
+  description: string
+  image?: string
+  url?: string
+  canonical?: string
+  noIndex?: boolean
+  type?: 'website' | 'article'
+  articleData?: {
+    publishedTime?: string
+    modifiedTime?: string
+    authors?: string[]
+    tags?: string[]
+  }
+}
+
+const {
+  title,
+  description,
+  image = '/og-default.png',
+  url,
+  canonical,
+  noIndex = false,
+  type = 'website',
+  articleData,
+} = Astro.props
+
+const seoTitle = title.length > 60 ? title.slice(0, 57) + '...' : title
+const seoDescription = description.length > 160 ? description.slice(0, 157) + '...' : description
+
+const imageUrl = image || `${Astro.site}og-default.png`
+---
+
+<SEO
+  title={seoTitle}
+  description={seoDescription}
+  openGraph={{
+    type: type === 'article' ? 'article' : 'website',
+    locale: 'en_US',
+    url,
+    image: imageUrl,
+    siteName: 'SEO Blog Platform',
+    ...(type === 'article' && articleData && {
+      article: {
+        publishedTime: articleData.publishedTime,
+        modifiedTime: articleData.modifiedTime,
+        authors: articleData.authors,
+        tags: articleData.tags,
+      },
+    }),
+  }}
+  twitter={{
+    card: 'summary_large_image',
+    site: '@yourhandle',
+    title: seoTitle,
+    description: seoDescription,
+    image: imageUrl,
+    imageAlt: 'Blog cover image',
+  }}
+  extend={{
+    ...(noIndex && {
+      robots: {
+        noindex: true,
+        nofollow: true,
+      },
+    }),
+    ...(canonical && {
+      canonical: canonical,
+    }),
+    link: [
+      { rel: 'preconnect', href: 'https://cdn.sanity.io' },
+      { rel: 'preconnect', href: 'https://*.sanity.io' },
+    ],
+  }}
+/>
+
+{type === 'article' && articleData && (
+  <JSONLD type="BlogPosting" data={{
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description: seoDescription,
+    image: [imageUrl],
+    author: {
+      '@type': 'Person',
+      name: articleData.authors?.[0],
+    },
+    datePublished: articleData.publishedTime,
+    dateModified: articleData.modifiedTime || articleData.publishedTime,
+  }} />
+)}
