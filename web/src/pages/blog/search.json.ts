@@ -1,8 +1,8 @@
 import { client } from '../../lib/sanity'
-import { POSTS_SEARCH_QUERY } from '../../lib/queries'
+import { POSTS_SEARCH_QUERY, safeFetch } from '../../lib/queries'
 
 export async function GET() {
-  const posts = await client.fetch(POSTS_SEARCH_QUERY)
+  const posts = await safeFetch(client, POSTS_SEARCH_QUERY)
   const index = posts.map((p: any) => ({
     id: p._id,
     title: p.title,

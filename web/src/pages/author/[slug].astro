@@ -2,13 +2,13 @@
 import Layout from '../../layouts/Layout.astro'
 import PostCard from '../../components/PostCard.astro'
 import { client } from '../../lib/sanity'
-import { AUTHOR_WITH_POSTS_QUERY } from '../../lib/queries'
+import { AUTHOR_WITH_POSTS_QUERY, safeFetch } from '../../lib/queries'
 import { getCanonicalUrl, truncateText } from '../../lib/seo'
 
 export const prerender = false
 
 const { slug } = Astro.params
-const author = await client.fetch(AUTHOR_WITH_POSTS_QUERY, { slug })
+const author = await safeFetch(client, AUTHOR_WITH_POSTS_QUERY, { slug })
 
 if (!author) {
   return Astro.redirect('/404')

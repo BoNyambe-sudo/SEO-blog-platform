@@ -26,6 +26,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+.vercel/
+.astro/
 
 # Logs
 *.log

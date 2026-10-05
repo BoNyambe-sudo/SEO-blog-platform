@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import { client } from '../../lib/sanity'
-import { POST_BY_SLUG_QUERY } from '../../lib/queries'
+import { POST_BY_SLUG_QUERY, safeFetch } from '../../lib/queries'
 import { getCanonicalUrl, truncateText } from '../../lib/seo'
 import { calculateReadTime } from '../../lib/utils'
 import PortableTextRenderer from '../../components/PortableTextRenderer.astro'
@@ -11,7 +11,7 @@ import SocialShare from '../../components/SocialShare.astro'
 export const prerender = false
 
 const { slug } = Astro.params
-const post = await client.fetch(POST_BY_SLUG_QUERY, { slug })
+const post = await safeFetch(client, POST_BY_SLUG_QUERY, { slug })
 
 if (!post) {
   return Astro.redirect('/404')

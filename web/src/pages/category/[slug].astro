@@ -2,13 +2,13 @@
 import Layout from '../../layouts/Layout.astro'
 import PostCard from '../../components/PostCard.astro'
 import { client } from '../../lib/sanity'
-import { CATEGORY_WITH_POSTS_QUERY } from '../../lib/queries'
+import { CATEGORY_WITH_POSTS_QUERY, safeFetch } from '../../lib/queries'
 import { getCanonicalUrl, truncateText } from '../../lib/seo'
 
 export const prerender = false
 
 const { slug } = Astro.params
-const category = await client.fetch(CATEGORY_WITH_POSTS_QUERY, { slug })
+const category = await safeFetch(client, CATEGORY_WITH_POSTS_QUERY, { slug })
 
 if (!category) {
   return Astro.redirect('/404')

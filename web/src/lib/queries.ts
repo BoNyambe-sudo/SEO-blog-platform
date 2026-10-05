@@ -53,3 +53,13 @@ export const POSTS_SEARCH_QUERY = `*[_type == "post" && defined(slug.current) &&
   _id, title, slug, excerpt, publishedAt,
   "categories": categories[]->title,
 }`
+
+export async function safeFetch(client: any, query: string, params?: any) {
+  if (!client) return []
+  try {
+    return await client.fetch(query, params)
+  } catch (e) {
+    console.error('Sanity query failed:', e)
+    return []
+  }
+}

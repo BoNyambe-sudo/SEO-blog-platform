@@ -1,10 +1,7 @@
 ---
-import { SEO } from 'astro-seo'
-import JSONLD from './JSONLD.astro'
-
 interface Props {
-  title: string
-  description: string
+  title?: string
+  description?: string
   image?: string
   url?: string
   canonical?: string
@@ -19,8 +16,8 @@ interface Props {
 }
 
 const {
-  title,
-  description,
+  title = 'SEO Blog Platform',
+  description = 'A content-first blog platform built for SEO and speed.',
   image = '/og-default.png',
   url,
   canonical,
@@ -29,57 +26,39 @@ const {
   articleData,
 } = Astro.props
 
+const siteUrl = Astro.site || 'https://example.com'
 const seoTitle = title.length > 60 ? title.slice(0, 57) + '...' : title
 const seoDescription = description.length > 160 ? description.slice(0, 157) + '...' : description
-
-const imageUrl = image || `${Astro.site}og-default.png`
+const imageUrl = `${siteUrl}${image || '/og-default.png'}`
+const pageUrl = url || canonical || siteUrl
 ---
 
-<SEO
-  title={seoTitle}
-  description={seoDescription}
-  openGraph={{
-    type: type === 'article' ? 'article' : 'website',
-    locale: 'en_US',
-    url,
-    image: imageUrl,
-    siteName: 'SEO Blog Platform',
-    ...(type === 'article' && articleData && {
-      article: {
-        publishedTime: articleData.publishedTime,
-        modifiedTime: articleData.modifiedTime,
-        authors: articleData.authors,
-        tags: articleData.tags,
-      },
-    }),
-  }}
-  twitter={{
-    card: 'summary_large_image',
-    site: '@yourhandle',
-    title: seoTitle,
-    description: seoDescription,
-    image: imageUrl,
-    imageAlt: 'Blog cover image',
-  }}
-  extend={{
-    ...(noIndex && {
-      robots: {
-        noindex: true,
-        nofollow: true,
-      },
-    }),
-    ...(canonical && {
-      canonical: canonical,
-    }),
-    link: [
-      { rel: 'preconnect', href: 'https://cdn.sanity.io' },
-      { rel: 'preconnect', href: 'https://*.sanity.io' },
-    ],
-  }}
-/>
+<title>{seoTitle}</title>
+<meta name="description" content={seoDescription} />
+<link rel="canonical" href={canonical || pageUrl} />
+
+<meta property="og:title" content={seoTitle} />
+<meta property="og:description" content={seoDescription} />
+<meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
+<meta property="og:url" content={pageUrl} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:site_name" content="SEO Blog Platform" />
+<meta property="og:locale" content="en_US" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={seoTitle} />
+<meta name="twitter:description" content={seoDescription} />
+<meta name="twitter:image" content={imageUrl} />
+
+{noIndex && (
+  <meta name="robots" content="noindex, nofollow" />
+)}
+
+<link rel="preconnect" href="https://cdn.sanity.io" />
+<link rel="preconnect" href="https://*.sanity.io" />
 
 {type === 'article' && articleData && (
-  <JSONLD type="BlogPosting" data={{
+  <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: title,
@@ -91,5 +70,5 @@ const imageUrl = image || `${Astro.site}og-default.png`
     },
     datePublished: articleData.publishedTime,
     dateModified: articleData.modifiedTime || articleData.publishedTime,
-  }} />
+  })} />
 )}

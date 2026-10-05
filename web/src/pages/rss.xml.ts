@@ -1,8 +1,8 @@
 import { client } from "../lib/sanity";
-import { POSTS_LIST_QUERY } from "../lib/queries";
+import { POSTS_LIST_QUERY, safeFetch } from "../lib/queries";
 
 export async function GET(context: { site: string }) {
-  const posts = await client.fetch(POSTS_LIST_QUERY, { skip: 0, limit: 100 });
+  const posts = await safeFetch(client, POSTS_LIST_QUERY, { skip: 0, limit: 100 });
 
   const items = posts
     .map(

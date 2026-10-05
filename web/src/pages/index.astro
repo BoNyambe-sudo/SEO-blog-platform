@@ -2,10 +2,10 @@
 import Layout from '../layouts/Layout.astro'
 import PostCard from '../components/PostCard.astro'
 import { client } from '../lib/sanity'
-import { FEATURED_POSTS_QUERY } from '../lib/queries'
+import { FEATURED_POSTS_QUERY, safeFetch } from '../lib/queries'
 import { getCanonicalUrl } from '../lib/seo'
 
-const posts = await client.fetch(FEATURED_POSTS_QUERY)
+const posts = await safeFetch(client, FEATURED_POSTS_QUERY)
 ---
 
 <Layout

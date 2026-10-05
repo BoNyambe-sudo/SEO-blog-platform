@@ -2,12 +2,12 @@
 import Layout from '../../../layouts/Layout.astro'
 import PostCard from '../../../components/PostCard.astro'
 import { client } from '../../../lib/sanity'
-import { POSTS_LIST_QUERY, POST_COUNT_QUERY } from '../../../lib/queries'
+import { POSTS_LIST_QUERY, POST_COUNT_QUERY, safeFetch } from '../../../lib/queries'
 import { getCanonicalUrl } from '../../../lib/seo'
 
 export async function getStaticPaths() {
-  const posts = await client.fetch(POSTS_LIST_QUERY, { skip: 0, limit: 1000 })
-  const count = await client.fetch(POST_COUNT_QUERY)
+  const posts = await safeFetch(client, POSTS_LIST_QUERY, { skip: 0, limit: 1000 })
+  const count = await safeFetch(client, POST_COUNT_QUERY)
   const totalPages = Math.ceil(count / 6)
 
   return Array.from({ length: totalPages }, (_, i) => ({
@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 }
 
 const { page, totalPages } = Astro.props
-const posts = await client.fetch(POSTS_LIST_QUERY, { skip: (page - 1) * 6, limit: 6 })
+const posts = await safeFetch(client, POSTS_LIST_QUERY, { skip: (page - 1) * 6, limit: 6 })
 ---
 
 <Layout

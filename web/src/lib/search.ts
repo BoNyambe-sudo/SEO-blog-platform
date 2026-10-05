@@ -1,5 +1,5 @@
 import { client } from './sanity'
-import { POSTS_SEARCH_QUERY } from './queries'
+import { POSTS_SEARCH_QUERY, safeFetch } from './queries'
 
 export interface SearchIndexItem {
   id: string
@@ -11,7 +11,7 @@ export interface SearchIndexItem {
 }
 
 export async function generateSearchIndex(): Promise<SearchIndexItem[]> {
-  const posts = await client.fetch(POSTS_SEARCH_QUERY)
+  const posts = await safeFetch(client, POSTS_SEARCH_QUERY)
   return posts.map((p: any) => ({
     id: p._id,
     title: p.title,
