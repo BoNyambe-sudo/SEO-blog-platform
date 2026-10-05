@@ -1,6 +1,5 @@
-
-import { client } from '../lib/sanity'
-import { POSTS_SEARCH_QUERY } from '../lib/queries'
+import { client } from '../../lib/sanity'
+import { POSTS_SEARCH_QUERY } from '../../lib/queries'
 
 export async function GET() {
   const posts = await client.fetch(POSTS_SEARCH_QUERY)

@@ -1,7 +1,7 @@
+---
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import SEOHead from '../components/SEOHead.astro'
-import { ViewTransitions } from 'astro:components'
 
 interface Props {
   title?: string
@@ -43,7 +43,6 @@ const {
       type={type}
       articleData={articleData}
     />
-    <ViewTransitions />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

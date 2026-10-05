@@ -1,46 +1,41 @@
----
-import { getCollection } from 'astro:content'
-import { client } from '../lib/sanity'
-import { POSTS_LIST_QUERY } from '../lib/queries'
+import { client } from "../lib/sanity";
+import { POSTS_LIST_QUERY } from "../lib/queries";
 
 export async function GET(context: { site: string }) {
-  const posts = await client.fetch(POSTS_LIST_QUERY, { skip: 0, limit: 100 })
+  const posts = await client.fetch(POSTS_LIST_QUERY, { skip: 0, limit: 100 });
 
-  const rssItems = posts.map((post: any) => ({
-    title: post.title,
-    description: post.excerpt,
-    pubDate: post.publishedAt,
-    link: `/blog/${post.slug.current}/`,
-    author: post.author?.name,
-    image: post.coverImage?.asset?.url,
-  }))
+  const items = posts
+    .map(
+      (post: any) => `
+    <item>
+      <title>${post.title}</title>
+      <description>${post.excerpt}</description>
+      <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
+      <link>${context.site}/blog/${post.slug.current}/</link>
+      <author>${post.author?.name || ""}</author>
+      ${post.coverImage?.asset?.url ? `<enclosure url="${post.coverImage.asset.url}" type="image/jpeg" />` : ""}
+    </item>
+  `,
+    )
+    .join("");
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>SEO Blog Platform</title>
     <description>Content-first blog about web development.</description>
     <link>${context.site}</link>
+    <atom:link href="${context.site}/rss.xml" rel="self" />
     <image>
       <url>${context.site}/og-default.png</url>
       <title>SEO Blog Platform</title>
       <link>${context.site}</link>
     </image>
-    ${rssItems.map(item => `
-    <item>
-      <title>${item.title}</title>
-      <description>${item.description}</description>
-      <pubDate>${new Date(item.pubDate).toUTCString()}</pubDate>
-      <link>${context.site}${item.link}</link>
-      <author>${item.author}</author>
-      ${item.image ? `<enclosure url="${item.image}" type="image/jpeg" />` : ''}
-    </item>`).join('')}
+    ${items}
   </channel>
-</rss>`
+</rss>`;
 
   return new Response(rss.trim(), {
-    headers: {
-      'Content-Type': 'application/xml',
-    },
-  })
+    headers: { "Content-Type": "application/xml" },
+  });
 }

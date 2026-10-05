@@ -1,3 +1,4 @@
+//@ts-ignore
 import { defineConfig } from 'astro/config'
 import vercel from '@astrojs/vercel'
 import sitemap from '@astrojs/sitemap'
@@ -7,7 +8,7 @@ import sanity from '@sanity/astro'
 export default defineConfig({
   site: process.env.SITE_URL,
 
-  output: 'hybrid',
+  output: 'static',
 
   adapter: vercel({
     isr: {
@@ -29,21 +30,12 @@ export default defineConfig({
       },
       changefreq: {
         'blog/*': 'daily',
-      },
+      } as const,
     }),
-    tailwind(),
   ],
 
   vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            fuse: ['fuse.js'],
-          },
-        },
-      },
-    },
+    plugins: [tailwind()],
     optimizeDeps: {
       include: ['fuse.js', 'clsx', 'reading-time'],
     },

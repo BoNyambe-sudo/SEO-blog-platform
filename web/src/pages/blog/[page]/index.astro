@@ -1,9 +1,9 @@
 ---
-import Layout from '../../layouts/Layout.astro'
-import PostCard from '../../components/PostCard.astro'
-import { client } from '../../lib/sanity'
-import { POSTS_LIST_QUERY, POST_COUNT_QUERY } from '../../lib/queries'
-import { getCanonicalUrl } from '../../lib/seo'
+import Layout from '../../../layouts/Layout.astro'
+import PostCard from '../../../components/PostCard.astro'
+import { client } from '../../../lib/sanity'
+import { POSTS_LIST_QUERY, POST_COUNT_QUERY } from '../../../lib/queries'
+import { getCanonicalUrl } from '../../../lib/seo'
 
 export async function getStaticPaths() {
   const posts = await client.fetch(POSTS_LIST_QUERY, { skip: 0, limit: 1000 })
