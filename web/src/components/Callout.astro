@@ -2,21 +2,26 @@
 import PortableTextRenderer from './PortableTextRenderer.astro'
 
 interface Props {
-  node: any
+  node: {
+    type?: 'info' | 'warning' | 'danger' | 'success'
+    title?: string
+    content?: Parameters<typeof PortableTextRenderer>[0]['value']
+  }
 }
 
-const { node } = Astro.props
-const { type = 'info', title } = node
-
-const typeClasses = {
-  info: 'bg-blue-50 dark:bg-blue-950/30 border-blue-400',
-  warning: 'bg-amber-50 dark:bg-amber-950/30 border-amber-400',
-  danger: 'bg-red-50 dark:bg-red-950/30 border-red-400',
-  success: 'bg-green-50 dark:bg-green-950/30 border-green-400',
+const { type = 'info', title } = Astro.props.node
+const appearances = {
+  info: 'border-primary/50 bg-primary/5 text-foreground',
+  warning: 'border-accent-foreground/40 bg-accent text-accent-foreground',
+  danger: 'border-destructive/50 bg-destructive/5 text-foreground',
+  success: 'border-primary/50 bg-primary/5 text-foreground',
 }
+const appearance = appearances[type] || appearances.info
 ---
 
-<aside class={`border-l-4 p-4 my-6 rounded ${typeClasses[type]}`}>
-  {title && <strong class="block mb-2">{title}</strong>}
-  <PortableTextRenderer value={node.content} />
+<aside class={`my-8 rounded-r-2xl border-l-4 p-5 ${appearance}`} aria-label={title || `${type} note`}>
+  {title && <strong class="mb-2 block text-sm font-bold">{title}</strong>}
+  <div class="text-sm leading-6">
+    <PortableTextRenderer value={Astro.props.node.content || []} />
+  </div>
 </aside>

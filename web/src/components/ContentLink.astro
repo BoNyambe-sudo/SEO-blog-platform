@@ -1,0 +1,25 @@
+---
+interface Props {
+  node: {
+    markDef?: {
+      href?: string
+    }
+  }
+}
+
+const href = Astro.props.node.markDef?.href?.trim() || ''
+const isSafeHref = /^(https?:\/\/|mailto:|\/|#)/i.test(href)
+const isExternal = /^https?:\/\//i.test(href)
+---
+
+{isSafeHref ? (
+  <a
+    href={href}
+    target={isExternal ? '_blank' : undefined}
+    rel={isExternal ? 'noopener noreferrer' : undefined}
+  >
+    <slot />
+  </a>
+) : (
+  <slot />
+)}

@@ -1,19 +1,18 @@
-<footer class="border-t border-gray-200 dark:border-gray-800 mt-16">
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-      <div>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          SEO Blog Platform. Built with Astro and Sanity.
-        </p>
-      </div>
-      <div class="flex gap-6">
-        <a href="/rss.xml" class="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600">
-          RSS
-        </a>
-        <a href="/sitemap-index.xml" class="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600">
-          Sitemap
-        </a>
-      </div>
+<footer class="mt-20 border-t border-border bg-card">
+  <div class="site-shell grid gap-10 py-12 sm:grid-cols-[1fr_auto] sm:items-end">
+    <div>
+      <a href="/" class="font-serif text-xl font-bold tracking-tight">Search & Signal</a>
+      <p class="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
+        Thoughtful, evidence-led notes on search, speed, and the craft of building a better web.
+      </p>
     </div>
+    <nav class="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground" aria-label="Footer navigation">
+      <a class="transition-colors hover:text-foreground" href="/blog/1">Articles</a>
+      <a class="transition-colors hover:text-foreground" href="/rss.xml">RSS feed</a>
+      <a class="transition-colors hover:text-foreground" href="/sitemap.xml">Sitemap</a>
+    </nav>
+    <p class="text-xs text-muted-foreground sm:col-span-2">
+      © {new Date().getFullYear()} Search & Signal. Made for the curious web.
+    </p>
   </div>
 </footer>

@@ -3,22 +3,64 @@ import DarkModeToggle from '../components/DarkModeToggle.astro'
 import SearchBar from '../components/SearchBar.astro'
 ---
 
-<header class="border-b border-gray-200 dark:border-gray-800">
-  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-    <a href="/" class="text-xl font-bold tracking-tight">
-      SEO Blog Platform
+<a
+  class="sr-only fixed left-4 top-4 z-50 rounded-lg bg-background px-4 py-2 text-foreground shadow-lg focus:not-sr-only"
+  href="#main-content"
+>
+  Skip to content
+</a>
+<header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
+  <div class="site-shell flex min-h-18 items-center justify-between gap-4 py-3">
+    <a href="/" class="flex shrink-0 items-center gap-3" aria-label="Search & Signal home">
+      <span class="grid size-10 place-items-center rounded-2xl bg-primary text-primary-foreground">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="21"
+          height="21"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 4.2 4.2M10.8 7.5v6.6M7.5 10.8h6.6"></path>
+        </svg>
+      </span>
+      <span>
+        <span class="block font-serif text-lg font-bold leading-none tracking-tight">Search & Signal</span>
+        <span class="mt-1 block text-[0.65rem] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+          Better by design
+        </span>
+      </span>
     </a>
-    <nav class="hidden md:flex items-center gap-6">
-      <a href="/blog" class="text-sm hover:text-blue-600 dark:hover:text-blue-400">Blog</a>
-      <a href="/category/seo" class="text-sm hover:text-blue-600 dark:hover:text-blue-400">SEO</a>
-      <a href="/category/web-performance" class="text-sm hover:text-blue-600 dark:hover:text-blue-400">Performance</a>
-    </nav>
-    <div class="flex items-center gap-2">
-      <SearchBar />
-      <DarkModeToggle />
-      <a href="/blog" class="text-sm px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700">
+
+    <nav class="hidden items-center gap-7 md:flex" aria-label="Main navigation">
+      <a href="/blog/1" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
         Articles
       </a>
+      <a href="/category/search-seo" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+        Search
+      </a>
+      <a href="/category/performance" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+        Performance
+      </a>
+      <a href="/category/engineering" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+        Engineering
+      </a>
+    </nav>
+
+    <div class="flex min-w-0 items-center gap-2">
+      <SearchBar />
+      <DarkModeToggle />
     </div>
   </div>
+  <nav class="site-shell flex gap-5 overflow-x-auto pb-3 text-xs font-medium text-muted-foreground md:hidden" aria-label="Explore topics">
+    <a href="/blog/1" class="shrink-0 hover:text-foreground">All articles</a>
+    <a href="/category/search-seo" class="shrink-0 hover:text-foreground">Search</a>
+    <a href="/category/performance" class="shrink-0 hover:text-foreground">Performance</a>
+    <a href="/category/engineering" class="shrink-0 hover:text-foreground">Engineering</a>
+  </nav>
 </header>

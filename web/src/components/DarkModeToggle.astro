@@ -1,20 +1,67 @@
-<button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" title="Toggle theme">
-  <svg class="sun-icon dark:hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-  <svg class="moon-icon hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button
+  id="theme-toggle"
+  class="grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
+  type="button"
+  aria-label="Toggle color theme"
+  title="Toggle color theme"
+  aria-pressed="false"
+>
+  <svg
+    class="sun-icon hidden dark:block"
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+  </svg>
+  <svg
+    class="moon-icon block dark:hidden"
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20.9 13.1A8.5 8.5 0 0 1 10.9 3.1 8.5 8.5 0 1 0 20.9 13.1Z"></path>
+  </svg>
 </button>
 
 <script is:inline>
-  const toggle = document.getElementById('theme-toggle')
-  const html = document.documentElement
-  const current = localStorage.getItem('theme') || 'system'
-  const cycle = { light: 'dark', dark: 'system', system: 'light' }
+  const themeToggle = document.getElementById('theme-toggle')
+  const root = document.documentElement
+  let themePreference = localStorage.getItem('theme') || 'system'
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
 
-  toggle?.addEventListener('click', () => {
-    const next = cycle[current] || 'light'
-    localStorage.setItem('theme', next)
-    const resolved = next === 'system'
-      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      : next
-    html.setAttribute('data-theme', resolved)
+  const applyTheme = () => {
+    const isDark = themePreference === 'dark' || (themePreference === 'system' && systemTheme.matches)
+    root.dataset.theme = isDark ? 'dark' : 'light'
+    themeToggle?.setAttribute('aria-pressed', String(isDark))
+    themeToggle?.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} appearance`)
+  }
+
+  themeToggle?.addEventListener('click', () => {
+    const isDark = root.dataset.theme === 'dark'
+    themePreference = isDark ? 'light' : 'dark'
+    localStorage.setItem('theme', themePreference)
+    applyTheme()
   })
+
+  systemTheme.addEventListener('change', () => {
+    if (themePreference === 'system') applyTheme()
+  })
+
+  applyTheme()
 </script>

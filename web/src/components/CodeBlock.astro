@@ -1,47 +1,62 @@
 ---
 import { Code } from 'astro/components'
-import type { ComponentProps } from 'astro'
 
 interface Props {
-  node: any
+  node: {
+    code: string
+    language?: string
+    filename?: string
+  }
 }
 
-const { node } = Astro.props
-const { code, language, filename } = node
+const { code, language = 'plaintext', filename } = Astro.props.node
+const lineCount = code.split('\n').length
 ---
 
-<div class="my-6 rounded-lg overflow-hidden">
+<figure class="my-8 overflow-hidden rounded-2xl border border-border bg-muted">
   {filename && (
-    <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm font-mono">{filename}</div>
+    <figcaption class="flex items-center gap-2 border-b border-border px-4 py-3 font-mono text-xs text-muted-foreground">
+      <span class="size-2 rounded-full bg-primary/60" aria-hidden="true"></span>
+      {filename}
+    </figcaption>
   )}
-  <div class="relative">
-    {code.split('\n').length > 8 && (
+  <div class="relative" data-code-block>
+    {lineCount > 8 && (
       <button
-        class="absolute top-2 right-2 text-xs px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded z-10"
-        id="copy-btn"
+        class="absolute right-3 top-3 z-10 rounded-lg border border-white/15 bg-black/50 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-black/70"
+        type="button"
+        data-copy-code
       >
-        Copy
+        Copy code
       </button>
     )}
     <Code
       code={code}
-      lang={language || 'plaintext'}
+      lang={language}
       theme={{
         light: 'github-light',
         dark: 'github-dark',
       }}
       wrapLines
-      showLineNumbers={code.split('\n').length > 5}
+      showLineNumbers={lineCount > 5}
     />
   </div>
-</div>
+</figure>
 
 <script>
-  const btn = document.getElementById('copy-btn')
-  btn?.addEventListener('click', async () => {
-    const code = btn.closest('pre')?.textContent
-    await navigator.clipboard.writeText(code || '')
-    btn.textContent = 'Copied!'
-    setTimeout(() => btn.textContent = 'Copy', 2000)
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-code]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const code = button.closest('[data-code-block]')?.querySelector('pre code')?.textContent || ''
+      try {
+        await navigator.clipboard.writeText(code)
+        button.textContent = 'Copied'
+      } catch (error) {
+        console.error('Could not copy this code block:', error)
+        button.textContent = 'Copy failed'
+      }
+      window.setTimeout(() => {
+        button.textContent = 'Copy code'
+      }, 2000)
+    })
   })
 </script>

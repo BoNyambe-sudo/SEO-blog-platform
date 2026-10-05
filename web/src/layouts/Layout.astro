@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import SEOHead from '../components/SEOHead.astro'
+import '../styles/global.css'
 
 interface Props {
   title?: string
@@ -18,9 +19,9 @@ interface Props {
 }
 
 const {
-  title = 'SEO Blog Platform',
-  description = 'A content-first blog platform built for SEO and speed.',
-  image = '/og-default.png',
+  title = 'Search & Signal',
+  description = 'Clear, practical field notes on technical SEO, web performance, and building for the modern web.',
+  image = '/og-default.svg',
   canonical,
   noIndex = false,
   type = 'website',
@@ -34,6 +35,14 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      const savedTheme = localStorage.getItem('theme') || 'system'
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      document.documentElement.dataset.theme =
+        savedTheme === 'system'
+          ? systemPrefersDark ? 'dark' : 'light'
+          : savedTheme
+    </script>
     <SEOHead
       title={title}
       description={description}
@@ -43,24 +52,12 @@ const {
       type={type}
       articleData={articleData}
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap"
-    />
   </head>
   <body>
     <Header />
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <Footer />
-    <script is:inline>
-      const theme = localStorage.getItem('theme') || 'system'
-      const html = document.documentElement
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      html.setAttribute('data-theme', theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme)
-    </script>
   </body>
 </html>

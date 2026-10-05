@@ -9,38 +9,73 @@ const posts = await safeFetch(client, FEATURED_POSTS_QUERY)
 ---
 
 <Layout
-  title="SEO Blog Platform"
-  description="A content-first blog platform built for SEO and speed."
+  title="Technical SEO & Web Performance"
+  description="Practical, evidence-led guides to technical SEO, web performance, and building a better web."
   canonical={getCanonicalUrl('/')}
   type="website"
 >
-  <section class="py-16">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">
-          Insights on SEO & Web Performance
+  <section class="hero-grid border-b border-border">
+    <div class="site-shell grid gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-end lg:gap-16 lg:py-28">
+      <div class="max-w-3xl">
+        <p class="eyebrow">Independent notes for the open web</p>
+        <h1 class="mt-5 max-w-3xl font-serif text-5xl font-bold leading-[1.02] tracking-[-0.045em] text-foreground sm:text-6xl lg:text-7xl">
+          Make the web <span class="text-primary">work harder.</span>
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-          Expert guides, tutorials, and best practices for building faster, more discoverable websites.
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
+          Clear, practical thinking on search, speed, and the details that make a website genuinely useful.
         </p>
-      </div>
-
-      {posts.length > 0 && (
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post: any) => (
-            <PostCard post={post} />
-          ))}
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a
+            href="/blog/1"
+            class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-95"
+          >
+            Explore the articles
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14m-7-7 7 7-7 7"></path>
+            </svg>
+          </a>
+          <span class="text-sm text-muted-foreground">No hacks. Just useful work.</span>
         </div>
-      )}
-
-      <div class="mt-12 text-center">
-        <a
-          href="/blog/1"
-          class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          View All Articles
-        </a>
+      </div>
+      <div class="hidden border-l border-border pl-7 lg:block">
+        <p class="eyebrow">What you’ll find</p>
+        <ul class="mt-4 space-y-3 text-sm leading-6 text-muted-foreground">
+          <li><span class="mr-2 text-primary">01</span> Search that serves people</li>
+          <li><span class="mr-2 text-primary">02</span> Performance with purpose</li>
+          <li><span class="mr-2 text-primary">03</span> A more thoughtful web</li>
+        </ul>
       </div>
     </div>
+  </section>
+
+  <section class="site-shell py-14 sm:py-20" aria-labelledby="latest-heading">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">Fresh from the notebook</p>
+        <h2 id="latest-heading" class="mt-2 font-serif text-3xl font-bold tracking-tight sm:text-4xl">
+          The latest thinking
+        </h2>
+      </div>
+      <a
+        href="/blog/1"
+        class="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:gap-3"
+      >
+        All articles
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    {posts.length > 0 ? (
+      <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {posts.map((post: any) => <PostCard post={post} />)}
+      </div>
+    ) : (
+      <div class="rounded-2xl border border-dashed border-border bg-card px-6 py-12 text-center">
+        <h3 class="font-serif text-xl font-bold">The first field notes are on their way.</h3>
+        <p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-muted-foreground">
+          New articles will appear here as soon as they are published.
+        </p>
+      </div>
+    )}
   </section>
 </Layout>

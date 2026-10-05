@@ -16,9 +16,9 @@ interface Props {
 }
 
 const {
-  title = 'SEO Blog Platform',
-  description = 'A content-first blog platform built for SEO and speed.',
-  image = '/og-default.png',
+  title = 'Search & Signal',
+  description = 'Clear, practical field notes on technical SEO, web performance, and building for the modern web.',
+  image = '/og-default.svg',
   url,
   canonical,
   noIndex = false,
@@ -26,23 +26,58 @@ const {
   articleData,
 } = Astro.props
 
-const siteUrl = Astro.site || 'https://example.com'
-const seoTitle = title.length > 60 ? title.slice(0, 57) + '...' : title
-const seoDescription = description.length > 160 ? description.slice(0, 157) + '...' : description
-const imageUrl = `${siteUrl}${image || '/og-default.png'}`
-const pageUrl = url || canonical || siteUrl
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || import.meta.env.SITE_URL
+const pageUrl = new URL(url || canonical || '/', siteUrl).toString()
+const canonicalUrl = new URL(canonical || url || '/', siteUrl).toString()
+const imageUrl = new URL(image, siteUrl).toString()
+const fullTitle = title === 'Search & Signal' ? title : `${title} | Search & Signal`
+const seoTitle = fullTitle.length > 60 ? `${fullTitle.slice(0, 57).trimEnd()}...` : fullTitle
+const seoDescription =
+  description.length > 160 ? `${description.slice(0, 157).trimEnd()}...` : description
+const structuredData =
+  type === 'article' && articleData
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description: seoDescription,
+        image: [imageUrl],
+        mainEntityOfPage: canonicalUrl,
+        author: {
+          '@type': 'Person',
+          name: articleData.authors?.[0] || 'Search & Signal Editorial',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Search & Signal',
+          url: siteUrl,
+        },
+        datePublished: articleData.publishedTime,
+        dateModified: articleData.modifiedTime || articleData.publishedTime,
+        keywords: articleData.tags?.join(', '),
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Search & Signal',
+        url: siteUrl,
+        description: seoDescription,
+      }
+const jsonLd = JSON.stringify(structuredData).replace(/</g, '\\u003c')
 ---
 
 <title>{seoTitle}</title>
 <meta name="description" content={seoDescription} />
-<link rel="canonical" href={canonical || pageUrl} />
+<link rel="canonical" href={canonicalUrl} />
+{noIndex && <meta name="robots" content="noindex, nofollow" />}
 
 <meta property="og:title" content={seoTitle} />
 <meta property="og:description" content={seoDescription} />
 <meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
 <meta property="og:url" content={pageUrl} />
 <meta property="og:image" content={imageUrl} />
-<meta property="og:site_name" content="SEO Blog Platform" />
+<meta property="og:image:alt" content={`${title} — Search & Signal`} />
+<meta property="og:site_name" content="Search & Signal" />
 <meta property="og:locale" content="en_US" />
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -50,25 +85,13 @@ const pageUrl = url || canonical || siteUrl
 <meta name="twitter:description" content={seoDescription} />
 <meta name="twitter:image" content={imageUrl} />
 
-{noIndex && (
-  <meta name="robots" content="noindex, nofollow" />
+{type === 'article' && articleData?.publishedTime && (
+  <meta property="article:published_time" content={articleData.publishedTime} />
 )}
-
-<link rel="preconnect" href="https://cdn.sanity.io" />
-<link rel="preconnect" href="https://*.sanity.io" />
-
-{type === 'article' && articleData && (
-  <script type="application/ld+json" set:html={JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: title,
-    description: seoDescription,
-    image: [imageUrl],
-    author: {
-      '@type': 'Person',
-      name: articleData.authors?.[0],
-    },
-    datePublished: articleData.publishedTime,
-    dateModified: articleData.modifiedTime || articleData.publishedTime,
-  })} />
+{type === 'article' && articleData?.modifiedTime && (
+  <meta property="article:modified_time" content={articleData.modifiedTime} />
 )}
+{articleData?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+
+<script type="application/ld+json" set:html={jsonLd} />
+<link rel="preconnect" href="https://cdn.sanity.io" crossorigin />

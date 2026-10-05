@@ -1,5 +1,4 @@
 ---
-import { urlFor } from '../lib/image'
 import { formatDate } from '../lib/utils'
 
 interface Post {
@@ -8,56 +7,97 @@ interface Post {
   slug: { current: string }
   excerpt?: string
   publishedAt: string
-  coverImage?: { asset: { url: string; metadata?: { dimensions?: { w: number; h: number } } } }
-  author?: { name: string; slug: { current: string }; image?: { asset: { url: string } } }
+  coverImage?: {
+    alt?: string
+    asset: {
+      _id?: string
+      url: string
+      metadata?: { dimensions?: { w: number; h: number } }
+    }
+  }
+  author?: { name: string; slug: { current: string } }
   categories?: { title: string; slug: { current: string } }[]
 }
 
 interface Props {
   post: Post
+  headingLevel?: 2 | 3
 }
 
-const { post } = Astro.props
-const imageUrl = post.coverImage
-  ? urlFor(post.coverImage.asset).width(800).auto('format').fit('crop').url()
-  : '/og-default.png'
+const { post, headingLevel = 2 } = Astro.props
+const imageUrl = post.coverImage?.asset.url
+  ? `${post.coverImage.asset.url}?auto=format&fit=max&w=960&q=82`
+  : null
+const firstCategory = post.categories?.[0]
+const categorySlug = firstCategory?.slug.current || 'search-seo'
+const artTheme = [
+  'search-seo',
+  'performance',
+  'engineering',
+  'content',
+  'accessibility',
+].includes(categorySlug)
+  ? categorySlug
+  : 'search-seo'
+const TitleTag = headingLevel === 2 ? 'h2' : 'h3'
 ---
 
-<article class="group">
-  <a href={`/blog/${post.slug.current}`} class="block">
-    <div class="aspect-video overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 mb-4">
-      <img
-        src={imageUrl}
-        alt={post.title}
-        width={800}
-        height={450}
-        loading="lazy"
-        decoding="async"
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-      />
+<article class="group min-w-0">
+  <a
+    href={`/blog/${post.slug.current}`}
+    class="block h-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-xl hover:shadow-foreground/5 focus-visible:-translate-y-1"
+  >
+    <div class="aspect-[1.72] overflow-hidden bg-muted">
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={post.coverImage?.alt || post.title}
+          width={post.coverImage?.asset.metadata?.dimensions?.w || 960}
+          height={post.coverImage?.asset.metadata?.dimensions?.h || 560}
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+      ) : (
+        <div class={`post-art post-art--${artTheme}`} aria-hidden="true">
+          <span class="post-art__mark">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 18.5 9 13l3.1 3.1L20 8"></path>
+              <path d="M14.5 8H20v5.5"></path>
+              <path d="M4 5.5h6"></path>
+            </svg>
+          </span>
+        </div>
+      )}
     </div>
-    <div class="space-y-2">
-      <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+    <div class="space-y-3 p-5 sm:p-6">
+      <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
         <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-        {post.categories && post.categories.length > 0 && (
+        {firstCategory && (
           <>
-            <span>·</span>
-            <span>{post.categories.map(c => c.title).join(', ')}</span>
+            <span aria-hidden="true">/</span>
+            <span class="font-semibold text-primary">{firstCategory.title}</span>
           </>
         )}
       </div>
-      <h3 class="text-lg font-semibold leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+      <TitleTag class="font-serif text-xl font-bold leading-snug tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-[1.35rem]">
         {post.title}
-      </h3>
+      </TitleTag>
       {post.excerpt && (
-        <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-          {post.excerpt}
-        </p>
+        <p class="line-clamp-3 text-sm leading-6 text-muted-foreground">{post.excerpt}</p>
       )}
       {post.author && (
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500 dark:text-gray-400">By {post.author.name}</span>
-        </div>
+        <p class="pt-1 text-xs font-medium text-muted-foreground">
+          By <span class="text-foreground">{post.author.name}</span>
+        </p>
       )}
     </div>
   </a>

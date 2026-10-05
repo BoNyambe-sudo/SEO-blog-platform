@@ -2,64 +2,96 @@
 import Layout from '../../layouts/Layout.astro'
 import PostCard from '../../components/PostCard.astro'
 import { client } from '../../lib/sanity'
-import { AUTHOR_WITH_POSTS_QUERY, safeFetch } from '../../lib/queries'
+import { AUTHOR_WITH_POSTS_QUERY, safeFetch, type AuthorWithPosts } from '../../lib/queries'
 import { getCanonicalUrl, truncateText } from '../../lib/seo'
 
 export const prerender = false
 
-const { slug } = Astro.params
-const author = await safeFetch(client, AUTHOR_WITH_POSTS_QUERY, { slug })
+const slug = Astro.params.slug || ''
+const author = await safeFetch<AuthorWithPosts | null>(client, AUTHOR_WITH_POSTS_QUERY, { slug })
 
-if (!author) {
-  return Astro.redirect('/404')
-}
+if (!author) Astro.response.status = 404
 ---
 
-<Layout
-  title={`${author.name} - SEO Blog Platform`}
-  description={truncateText(author.bio || `Posts by ${author.name}`, 160)}
-  canonical={getCanonicalUrl(`/author/${slug}`)}
-  type="website"
->
-  <section class="py-12">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="flex items-start gap-6 mb-8">
-        {author.image && (
+{author ? (
+  <Layout
+    title={`${author.name} — Articles`}
+    description={truncateText(author.bio || `Articles by ${author.name}.`, 160)}
+    canonical={getCanonicalUrl(`/author/${slug}`)}
+  >
+    <section class="site-shell py-12 sm:py-16">
+      <header class="mb-14 flex flex-col gap-6 border-b border-border pb-10 sm:flex-row sm:items-center">
+        {author.image?.asset?.url && (
           <img
             src={author.image.asset.url}
-            alt={author.name}
-            width={120}
-            height={120}
-            class="rounded-full"
+            alt=""
+            width={author.image.asset.metadata?.dimensions?.w || 128}
+            height={author.image.asset.metadata?.dimensions?.h || 128}
+            loading="lazy"
+            decoding="async"
+            class="size-24 rounded-full border border-border object-cover sm:size-32"
           />
         )}
         <div>
-          <h1 class="text-3xl font-bold mb-2">{author.name}</h1>
-          {author.bio && (
-            <p class="text-gray-600 dark:text-gray-400">{author.bio}</p>
-          )}
-          <div class="flex gap-4 mt-4">
-            {author.twitter && (
-              <a href={author.twitter} class="text-blue-600 hover:underline" target="_blank" rel="noopener">Twitter</a>
-            )}
+          <p class="eyebrow">Contributing writer</p>
+          <h1 class="mt-2 font-serif text-4xl font-bold tracking-tight sm:text-5xl">{author.name}</h1>
+          {author.bio && <p class="mt-4 max-w-2xl leading-7 text-muted-foreground">{author.bio}</p>}
+          <div class="mt-4 flex flex-wrap gap-4 text-sm font-medium">
             {author.website && (
-              <a href={author.website} class="text-blue-600 hover:underline" target="_blank" rel="noopener">Website</a>
+              <a
+                href={author.website}
+                class="text-primary underline-offset-4 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Website
+              </a>
+            )}
+            {author.twitter && (
+              <a
+                href={author.twitter}
+                class="text-primary underline-offset-4 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Twitter
+              </a>
             )}
           </div>
         </div>
+      </header>
+
+      <div class="mb-7">
+        <p class="eyebrow">From this writer</p>
+        <h2 class="mt-2 font-serif text-2xl font-bold">Articles by {author.name}</h2>
       </div>
-
-      <h2 class="text-2xl font-bold mb-6">Posts by {author.name}</h2>
-
-      {author.posts && author.posts.length > 0 ? (
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {author.posts.map((post: any) => (
-            <PostCard post={post} />
-          ))}
+      {author.posts.length > 0 ? (
+        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {author.posts.map((post) => <PostCard post={post} headingLevel={3} />)}
         </div>
       ) : (
-        <p class="text-gray-600 dark:text-gray-400">No posts yet.</p>
+        <p class="rounded-2xl border border-dashed border-border bg-card px-6 py-12 text-center text-muted-foreground">
+          This writer hasn’t published any articles yet.
+        </p>
       )}
-    </div>
-  </section>
-</Layout>
+    </section>
+  </Layout>
+) : (
+  <Layout
+    title="Author not found"
+    description="This author could not be found."
+    canonical={getCanonicalUrl(`/author/${slug}`)}
+    noIndex
+  >
+    <section class="site-shell py-24 text-center">
+      <p class="eyebrow">404 — Author not found</p>
+      <h1 class="mt-4 font-serif text-4xl font-bold">This writer isn’t here.</h1>
+      <a
+        href="/blog/1"
+        class="mt-7 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
+      >
+        Browse articles
+      </a>
+    </section>
+  </Layout>
+)}

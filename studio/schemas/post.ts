@@ -26,18 +26,61 @@ export default defineType({
       title: 'Excerpt',
       type: 'text',
       rows: 4,
-      validation: (Rule) => Rule.max(200),
+      validation: (Rule) => Rule.required().max(200),
     }),
     defineField({
       name: 'content',
       title: 'Content',
       type: 'array',
+      validation: (Rule) => Rule.required().min(1),
       of: [
-        { type: 'block' },
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'Heading 2', value: 'h2' },
+            { title: 'Heading 3', value: 'h3' },
+            { title: 'Quote', value: 'blockquote' },
+          ],
+          marks: {
+            annotations: [
+              {
+                name: 'link',
+                title: 'Link',
+                type: 'object',
+                fields: [
+                  {
+                    name: 'href',
+                    title: 'URL',
+                    type: 'url',
+                    validation: (Rule) =>
+                      Rule.required().uri({ scheme: ['http', 'https', 'mailto'] }),
+                  },
+                ],
+              },
+            ],
+          },
+        },
         codeBlock,
         youtubeBlock,
         calloutBlock,
-        { type: 'image', options: { hotspot: true } },
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alternative text',
+              type: 'string',
+              validation: (Rule) => Rule.required().max(150),
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            }),
+          ],
+        },
       ],
     }),
     defineField({
@@ -45,6 +88,14 @@ export default defineType({
       title: 'Cover Image',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alternative text',
+          type: 'string',
+          validation: (Rule) => Rule.required().max(150),
+        }),
+      ],
     }),
     defineField({
       name: 'author',
@@ -64,6 +115,7 @@ export default defineType({
       title: 'SEO Title',
       type: 'string',
       description: 'Overrides <title> tag. Max 60 chars.',
+      validation: (Rule) => Rule.max(60),
     }),
     defineField({
       name: 'seoDescription',
@@ -71,6 +123,7 @@ export default defineType({
       type: 'text',
       rows: 3,
       description: 'Overrides meta description. Max 160 chars.',
+      validation: (Rule) => Rule.max(160),
     }),
     defineField({
       name: 'publishedAt',

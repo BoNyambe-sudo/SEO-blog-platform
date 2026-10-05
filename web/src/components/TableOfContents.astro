@@ -1,39 +1,50 @@
 ---
+import { getContentHeadings } from '../lib/utils'
+
 interface Props {
-  content: any[]
+  content: Parameters<typeof getContentHeadings>[0]
 }
 
-const { content } = Astro.props
-
-function extractHeadings(content: any[]): { text: string; slug: string; level: number }[] {
-  const stack: { text: string; slug: string; level: number }[] = []
-  for (const block of content) {
-    if (block._type === 'block' && ['h2', 'h3'].includes(block.style)) {
-      const text = block.children?.map((c: any) => c.text).join('') || ''
-      const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-      stack.push({ text, slug, level: block.style === 'h2' ? 2 : 3 })
-    }
-  }
-  return stack
-}
-
-const headings = extractHeadings(content)
+const headings = getContentHeadings(Astro.props.content)
 ---
 
 {headings.length > 0 && (
-  <nav class="hidden lg:block" aria-label="Table of contents">
-    <h3 class="text-sm font-semibold mb-4">On this page</h3>
-    <ul class="space-y-1">
-      {headings.map((h) => (
-        <li class={`ml-${h.level * 2}`}>
-          <a
-            href={`#${h.slug}`}
-            class="text-sm hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            {h.text}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
+  <>
+    <details class="mb-8 rounded-2xl border border-border bg-card p-4 lg:hidden">
+      <summary class="cursor-pointer list-none text-sm font-semibold">
+        On this page
+        <span class="float-right text-muted-foreground" aria-hidden="true">+</span>
+      </summary>
+      <nav class="mt-3" aria-label="Table of contents">
+        <ul class="space-y-2 border-l border-border pl-3">
+          {headings.map((heading) => (
+            <li class={heading.level === 3 ? 'pl-3' : undefined}>
+              <a
+                href={`#${heading.id}`}
+                class="text-sm leading-5 text-muted-foreground transition-colors hover:text-primary"
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </details>
+
+    <nav class="hidden lg:sticky lg:top-28 lg:block" aria-label="Table of contents">
+      <h2 class="eyebrow text-[0.65rem]">On this page</h2>
+      <ul class="mt-4 space-y-2 border-l border-border pl-3">
+        {headings.map((heading) => (
+          <li class={heading.level === 3 ? 'pl-3' : undefined}>
+            <a
+              href={`#${heading.id}`}
+              class="text-sm leading-5 text-muted-foreground transition-colors hover:text-primary"
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </>
 )}
