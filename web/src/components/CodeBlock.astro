@@ -10,10 +10,9 @@ interface Props {
 }
 
 const { code, language = 'plaintext', filename } = Astro.props.node
-const lineCount = code.split('\n').length
 ---
 
-<figure class="my-8 overflow-hidden rounded-2xl border border-border bg-muted">
+<figure class="my-8 overflow-hidden rounded-2xl border border-border">
   {filename && (
     <figcaption class="flex items-center gap-2 border-b border-border px-4 py-3 font-mono text-xs text-muted-foreground">
       <span class="size-2 rounded-full bg-primary/60" aria-hidden="true"></span>
@@ -21,24 +20,12 @@ const lineCount = code.split('\n').length
     </figcaption>
   )}
   <div class="relative" data-code-block>
-    {lineCount > 8 && (
-      <button
-        class="absolute right-3 top-3 z-10 rounded-lg border border-white/15 bg-black/50 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-black/70"
-        type="button"
-        data-copy-code
-      >
-        Copy code
-      </button>
-    )}
     <Code
       code={code}
-      lang={language}
-      theme={{
-        light: 'github-light',
-        dark: 'github-dark',
-      }}
-      wrapLines
-      showLineNumbers={lineCount > 5}
+      lang={language as any}
+      themes={{ light: 'github-light', dark: 'github-dark' }}
+      defaultColor={false}
+      wrap
     />
   </div>
 </figure>

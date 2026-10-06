@@ -45,6 +45,15 @@ export interface PortableContentBlock {
   [key: string]: unknown
 }
 
+export interface PostSearchData {
+  _id: string
+  title: string
+  slug: { current: string }
+  excerpt?: string
+  publishedAt: string
+  categories: string[]
+}
+
 export interface PostDetail extends PostCardData {
   _updatedAt?: string
   content: PortableContentBlock[]
@@ -155,7 +164,9 @@ export async function safeFetch<T>(
   }
 
   try {
-    return await client.fetch<T>(query, params)
+    return params
+      ? await client.fetch<T>(query, params)
+      : await client.fetch<T>(query)
   } catch (error) {
     console.error('Sanity query failed:', error)
     throw error

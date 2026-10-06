@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#03242b"/>
+      <stop offset="1" stop-color="#0b5563"/>
+    </linearGradient>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e7490"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1056" cy="50" r="340" fill="url(#glow)"/>
+  <circle cx="600" cy="328" r="390" fill="none" stroke="#67e8f9" stroke-opacity="0.14" stroke-width="3"/>
+  <circle cx="600" cy="328" r="277" fill="none" stroke="#67e8f9" stroke-opacity="0.14" stroke-width="2"/>
+  <rect x="411" y="134" width="378" height="378" rx="83" fill="url(#tile)"/>
+  <circle cx="574" cy="307" r="79" fill="none" stroke="#ffffff" stroke-width="32"/>
+  <line x1="631" y1="364" x2="713" y2="446" stroke="#ffffff" stroke-width="36" stroke-linecap="round"/>
+</svg>

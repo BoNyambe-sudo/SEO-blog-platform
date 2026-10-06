@@ -205,7 +205,7 @@ const posts = [
         'First Input Delay (FID) was replaced by INP as a Core Web Vital in March 2024. Keep older FID dashboards clearly labeled as historical; they are not a substitute for measuring INP.',
       ),
       heading('Prioritize work by impact and evidence'),
-      bulletList([
+      ...bulletList([
         'Fix issues affecting the largest number of real visitors before polishing a single low-traffic URL.',
         'Choose changes tied to a measured bottleneck, such as a late-discovered hero image or a long main-thread task.',
         'Protect accessibility and content quality; removing useful interface features for a score is rarely a durable win.',
@@ -254,7 +254,7 @@ const posts = [
         'Include canonical, indexable URLs in an XML sitemap and keep its last-modified dates honest. A sitemap supports discovery; it does not guarantee indexing. Link to important content from relevant pages using ordinary crawlable anchors. Avoid orphan articles, broken links, and navigation that depends entirely on client-side events.',
       ),
       heading('4. Give the page a clear purpose'),
-      bulletList([
+      ...bulletList([
         'Write a descriptive title and a concise summary that accurately represent the page.',
         'Use one clear page heading and a sensible sequence of subheadings.',
         'Describe images that contribute meaning; use empty alternative text for decorative images.',
@@ -371,7 +371,7 @@ const posts = [
         'Group queries when the same page can satisfy the underlying need. Give each planned page one clear primary job, then use supporting sections for close subtopics. If two pages would answer the same question with nearly identical content, combine them or make their audiences and outcomes genuinely distinct. More URLs are not automatically more coverage.',
       ),
       heading('Write a brief that improves the final page'),
-      bulletList([
+      ...bulletList([
         'Reader and situation: who is asking, and what are they trying to decide or do?',
         'Promise: what will they understand or be able to complete after reading?',
         'Evidence: which first-hand examples, data, or expert review support the answer?',

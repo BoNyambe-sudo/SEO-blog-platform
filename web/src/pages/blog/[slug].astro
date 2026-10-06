@@ -4,14 +4,14 @@ import PortableTextRenderer from '../../components/PortableTextRenderer.astro'
 import SocialShare from '../../components/SocialShare.astro'
 import TableOfContents from '../../components/TableOfContents.astro'
 import { client } from '../../lib/sanity'
-import { POST_BY_SLUG_QUERY, safeFetch } from '../../lib/queries'
+import { POST_BY_SLUG_QUERY, safeFetch, type PostDetail } from '../../lib/queries'
 import { getCanonicalUrl, truncateText } from '../../lib/seo'
 import { calculateReadTime, formatDate } from '../../lib/utils'
 
 export const prerender = false
 
 const slug = Astro.params.slug || ''
-const post = await safeFetch(client, POST_BY_SLUG_QUERY, { slug })
+const post = await safeFetch<PostDetail | null>(client, POST_BY_SLUG_QUERY, { slug })
 
 if (!post) {
   Astro.response.status = 404
@@ -49,7 +49,7 @@ const image = post?.coverImage?.asset?.url
       </nav>
 
       <header class="mx-auto mb-9 max-w-3xl">
-        {post.categories?.length > 0 && (
+        {post.categories && post.categories.length > 0 && (
           <div class="mb-5 flex flex-wrap gap-2">
             {post.categories.map((category) => (
               <a

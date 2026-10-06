@@ -2,26 +2,38 @@
 import Layout from '../../../layouts/Layout.astro'
 import PostCard from '../../../components/PostCard.astro'
 import { client } from '../../../lib/sanity'
-import { POSTS_LIST_QUERY, POST_COUNT_QUERY, safeFetch } from '../../../lib/queries'
+import { POSTS_LIST_QUERY, POST_COUNT_QUERY, safeFetch, type PostCardData } from '../../../lib/queries'
 import { getCanonicalUrl } from '../../../lib/seo'
 
-export const prerender = false
+export const prerender = true
+export const revalidate = 3600
 
-const pageParam = Number(Astro.params.page)
-const page = Number.isSafeInteger(pageParam) && pageParam > 0 ? pageParam : 1
-const pageSize = 9
-const count = await safeFetch<number>(client, POST_COUNT_QUERY)
-const totalPages = Math.ceil(count / pageSize)
-const isValidPage = Number.isSafeInteger(pageParam) && pageParam > 0 && page <= Math.max(totalPages, 1)
+interface Props {
+  page: number
+  totalPages: number
+  posts: PostCardData[]
+}
 
-if (!isValidPage) Astro.response.status = 404
+export async function getStaticPaths() {
+  const pageSize = 9
+  const count = await safeFetch<number>(client, POST_COUNT_QUERY)
+  const totalPages = Math.max(1, Math.ceil(count / pageSize))
 
-const posts = isValidPage
-  ? await safeFetch(client, POSTS_LIST_QUERY, {
+  const paths = []
+  for (let page = 1; page <= totalPages; page++) {
+    const posts = await safeFetch<PostCardData[]>(client, POSTS_LIST_QUERY, {
       skip: (page - 1) * pageSize,
       limit: pageSize,
     })
-  : []
+    paths.push({
+      params: { page: String(page) },
+      props: { page, totalPages, posts },
+    })
+  }
+  return paths
+}
+
+const { page, totalPages, posts } = Astro.props
 const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1).filter(
   (number) => Math.abs(number - page) <= 2 || number === 1 || number === totalPages,
 )

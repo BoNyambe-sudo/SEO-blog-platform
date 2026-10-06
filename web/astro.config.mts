@@ -28,6 +28,7 @@ const siteUrl = process.env.SITE_URL || 'http://localhost:4321'
 
 export default defineConfig({
   site: siteUrl,
+  publicDir: 'static',
   output: 'server',
 
   adapter: vercel({
