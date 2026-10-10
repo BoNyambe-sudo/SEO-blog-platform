@@ -110,7 +110,9 @@ const image = post?.coverImage?.asset?.url
 
       <div class="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-14">
         <div class="min-w-0">
-          <TableOfContents content={post.content || []} />
+          <div class="lg:hidden">
+            <TableOfContents content={post.content || []} />
+          </div>
           <div class="prose max-w-none">
             <PortableTextRenderer value={post.content || []} />
           </div>
