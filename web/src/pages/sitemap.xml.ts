@@ -36,7 +36,7 @@ export const GET: APIRoute = async ({ site }) => {
 
   const urls: SitemapUrl[] = [
     { loc: `${siteUrl}/`, changefreq: 'daily', priority: 1.0 },
-    { loc: `${siteUrl}/blog/1`, changefreq: 'daily', priority: 0.8 },
+    { loc: `${siteUrl}/blog/1/`, changefreq: 'daily', priority: 0.8 },
     ...posts.map((post) => ({
       loc: `${siteUrl}/blog/${post.slug}`,
       lastmod: post._updatedAt,

@@ -42,7 +42,7 @@ const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1)
 <Layout
   title={page === 1 ? 'All articles' : `Articles — page ${page}`}
   description="In-depth, practical guides to technical SEO, Core Web Vitals, content strategy, and modern web development."
-  canonical={getCanonicalUrl(`/blog/${page}`)}
+  canonical={getCanonicalUrl(`/blog/${page}/`)}
   type="website"
 >
   <section class="site-shell py-12 sm:py-16">
@@ -69,7 +69,7 @@ const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1)
       <nav class="mt-12 flex flex-wrap items-center justify-center gap-2" aria-label="Article pages">
         {page > 1 && (
           <a
-            href={`/blog/${page - 1}`}
+            href={`/blog/${page - 1}/`}
             class="rounded-xl border border-border px-4 py-2 text-sm font-medium transition hover:bg-muted"
             rel="prev"
           >
@@ -78,7 +78,7 @@ const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1)
         )}
         {visiblePages.map((number) => (
           <a
-            href={`/blog/${number}`}
+            href={`/blog/${number}/`}
             class:list={[
               'grid size-10 place-items-center rounded-xl text-sm font-semibold transition',
               number === page
@@ -93,7 +93,7 @@ const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1)
         ))}
         {page < totalPages && (
           <a
-            href={`/blog/${page + 1}`}
+            href={`/blog/${page + 1}/`}
             class="rounded-xl border border-border px-4 py-2 text-sm font-medium transition hover:bg-muted"
             rel="next"
           >

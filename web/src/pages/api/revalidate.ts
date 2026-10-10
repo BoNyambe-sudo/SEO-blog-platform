@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     switch (_type) {
       case 'post':
-        return [`/blog/${slug.current}`, '/blog', '/']
+        return [`/blog/${slug.current}`, '/blog/1/', '/']
       case 'category':
         return [`/category/${slug.current}`, '/']
       case 'author':

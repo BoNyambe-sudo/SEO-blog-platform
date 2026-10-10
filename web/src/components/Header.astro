@@ -10,13 +10,13 @@ import SearchBar from '../components/SearchBar.astro'
   Skip to content
 </a>
 <header class="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-  <div class="site-shell flex min-h-18 items-center justify-between gap-4 py-3">
-    <a href="/" class="flex shrink-0 items-center gap-3" aria-label="Search & Signal home">
-      <span class="grid size-10 place-items-center rounded-2xl bg-primary text-primary-foreground">
+  <div class="site-shell flex min-h-16 items-center justify-between gap-2 py-2 sm:gap-3 sm:py-3">
+    <a href="/" class="flex shrink-0 items-center gap-1.5 sm:gap-3" aria-label="Search & Signal home">
+      <span class="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground sm:size-9">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="21"
-          height="21"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -29,16 +29,16 @@ import SearchBar from '../components/SearchBar.astro'
           <path d="m16 16 4.2 4.2M10.8 7.5v6.6M7.5 10.8h6.6"></path>
         </svg>
       </span>
-      <span>
+      <span class="hidden sm:inline-block">
         <span class="block font-serif text-lg font-bold leading-none tracking-tight">Search & Signal</span>
-        <span class="mt-1 block text-[0.65rem] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+        <span class="mt-0.5 text-[0.6rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
           Better by design
         </span>
       </span>
     </a>
 
     <nav class="hidden items-center gap-7 md:flex" aria-label="Main navigation">
-      <a href="/blog/1" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+      <a href="/blog/1/" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
         Articles
       </a>
       <a href="/category/search-seo" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
@@ -52,13 +52,13 @@ import SearchBar from '../components/SearchBar.astro'
       </a>
     </nav>
 
-    <div class="flex min-w-0 items-center gap-2">
+    <div class="flex min-w-0 items-center gap-1.5 sm:gap-2">
       <SearchBar />
       <DarkModeToggle />
     </div>
   </div>
   <nav class="site-shell flex gap-5 overflow-x-auto pb-3 text-xs font-medium text-muted-foreground md:hidden" aria-label="Explore topics">
-    <a href="/blog/1" class="shrink-0 hover:text-foreground">All articles</a>
+    <a href="/blog/1/" class="shrink-0 hover:text-foreground">All articles</a>
     <a href="/category/search-seo" class="shrink-0 hover:text-foreground">Search</a>
     <a href="/category/performance" class="shrink-0 hover:text-foreground">Performance</a>
     <a href="/category/engineering" class="shrink-0 hover:text-foreground">Engineering</a>

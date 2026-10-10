@@ -29,7 +29,7 @@
     text-underline-offset: 0.2em;
   }
 
-  .dark .prose a {
+  [data-theme="dark"] .prose a {
     color: #60a5fa;
   }
 
@@ -41,7 +41,7 @@
     color: #6b7280;
   }
 
-  .dark .prose blockquote {
+  [data-theme="dark"] .prose blockquote {
     border-left-color: #374151;
     color: #9ca3af;
   }
@@ -66,14 +66,13 @@
     border-radius: 0.25em;
   }
 
-  .dark .prose code {
+  [data-theme="dark"] .prose code {
     background: #1f2937;
   }
 
   .prose pre {
     overflow-x: auto;
     padding: 1em;
-    background: #1f2937;
     border-radius: 0.5em;
     margin-top: 1.5em;
     margin-bottom: 1.5em;
@@ -82,7 +81,7 @@
   .prose pre code {
     background: transparent;
     padding: 0;
-    color: #e5e7eb;
+    color: inherit;
     font-size: 0.875em;
   }
 
@@ -104,7 +103,7 @@
     margin-top: 0.5em;
   }
 
-  .dark .prose figcaption {
+  [data-theme="dark"] .prose figcaption {
     color: #9ca3af;
   }
 
@@ -115,7 +114,7 @@
     margin-bottom: 2em;
   }
 
-  .dark .prose hr {
+  [data-theme="dark"] .prose hr {
     border-top-color: #374151;
   }
 }

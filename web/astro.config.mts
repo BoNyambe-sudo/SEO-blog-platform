@@ -26,6 +26,21 @@ const apiVersion =
   process.env.PUBLIC_SANITY_API_VERSION || process.env.SANITY_API_VERSION || '2026-03-01'
 const siteUrl = process.env.SITE_URL || 'http://localhost:4321'
 
+const icoMimeTypePlugin = {
+  name: 'vite:ico-mimetype',
+  enforce: 'pre' as const,
+  apply: 'serve' as const,
+  configureServer(server) {
+    server.middlewares.use((_req, res, next) => {
+      const url = new URL(_req.url || '', 'http://localhost').pathname
+      if (url.endsWith('.ico')) {
+        res.setHeader('Content-Type', 'image/x-icon')
+      }
+      next()
+    })
+  },
+}
+
 export default defineConfig({
   site: siteUrl,
   publicDir: 'static',
@@ -39,7 +54,7 @@ export default defineConfig({
   }),
 
   vite: {
-    plugins: [tailwind()],
+    plugins: [tailwind(), icoMimeTypePlugin],
     define: {
       'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(projectId),
       'import.meta.env.PUBLIC_SANITY_DATASET': JSON.stringify(dataset),
@@ -52,6 +67,7 @@ export default defineConfig({
   },
 
   redirects: {
+    '/blog': '/blog/1/',
     '/web': '/',
   },
 })
